@@ -109,7 +109,6 @@ def download_car_variants_batch(self, model_id):
         )
         features = []
         for feature in result["keyFeatures"]:
-            logger.debug(feature["id"])
             # TODO: fix duplicates when multithreading
             car_feature = CarFeature.objects.filter(
                 name=feature["name"],

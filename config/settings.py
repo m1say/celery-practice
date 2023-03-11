@@ -133,3 +133,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_BROKER_URL = "redis://localhost:6379/5"
 CELERY_TASK_ALWAYS_EAGER = False
 CELERY_SOFT_TIME_LIMIT = 60 * 60 * 2  # 2 hours
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
