@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "zigwheels.apps.cars",
     "zigwheels.apps.cities",
+    "zigwheels.apps.api",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "djmoney",
     "model_utils",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -130,3 +132,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Celery
 CELERY_BROKER_URL = "redis://localhost:6379/5"
 CELERY_TASK_ALWAYS_EAGER = False
+CELERY_SOFT_TIME_LIMIT = 60 * 60 * 2  # 2 hours

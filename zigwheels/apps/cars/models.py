@@ -1,13 +1,8 @@
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djmoney.models.fields import MoneyField
 from model_utils.models import TimeStampedModel
-
-
-"""
-TODO: sync data before they realize
-        - create script
-"""
 
 
 class BaseModel(TimeStampedModel):
@@ -21,12 +16,18 @@ class BaseModel(TimeStampedModel):
 
 class Brand(BaseModel):
     name = models.CharField(_("Brand name"), max_length=100, blank=True)
-    external_id = models.IntegerField()
+    slug = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
-class BrandModel(BaseModel):
+class Car(BaseModel):
     name = models.CharField(_("Car model"), max_length=100, blank=True)
     brand = models.ForeignKey(Brand, related_name="models", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.brand.name} - {self.name}"
 
 
 class CarFeature(BaseModel):
@@ -52,11 +53,12 @@ class CarFeature(BaseModel):
         help_text=_("Type/Category of car feature"),
     )
 
+    def __str__(self):
+        return f"{self.name} - {self.value} {self.unit}"
 
-class ModelVariant(BaseModel):
-    parent = models.ForeignKey(
-        BrandModel, related_name="variants", on_delete=models.CASCADE
-    )
+
+class CarVariant(BaseModel):
+    parent = models.ForeignKey(Car, related_name="variants", on_delete=models.CASCADE)
     name = models.CharField(
         _("Car variant name"),
         max_length=100,
@@ -85,6 +87,7 @@ class ModelVariant(BaseModel):
     features = models.ManyToManyField(CarFeature, related_name="cars", blank=True)
     min_price = MoneyField(max_digits=19, decimal_places=2, default_currency="PHP")
     max_price = MoneyField(max_digits=19, decimal_places=2, default_currency="PHP")
+    raw_data = models.JSONField(blank=True, default=dict, encoder=DjangoJSONEncoder)
 
     @property
     def price_range(self):

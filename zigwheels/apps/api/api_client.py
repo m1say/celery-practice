@@ -55,6 +55,10 @@ class ZigWheelsAPI:
         response = self.session.request(method, url, **kwargs)
         return response.json()["data"]
 
+    def get_cities(self):
+        data = self.run(method="POST", endpoint="cities")
+        return data
+
     def get_car_brands(self):
         data = self.run(
             method="GET",
@@ -108,11 +112,13 @@ if __name__ == "__main__":
     import json
 
     api_client = ZigWheelsAPI()
-    brands = api_client.get_car_brands()
-    brand_models = api_client.get_brand_models(brand_id=30)
-    model_variants = api_client.get_model_variants(model_id=1943)
-    model_variant_overview = api_client.get_model_variant_overview(
-        model_id=1943, variant_id=4069
-    )
+    # cities = api_client.get_cities()
+    # print(f"{len(cities)=}")
+    # brands = api_client.get_car_brands()
+    # brand_models = api_client.get_brand_models(brand_id=30)
+    # model_variants = api_client.get_model_variants(model_id=1943)
+    # model_variant_overview = api_client.get_model_variant_overview(
+    #     model_id=1943, variant_id=4069
+    # )
     # print(json.dumps(model_variant_overview, default=str, indent=2))
-    print(f"{len(brands)=} {len(brand_models)=} {len(model_variants)=}")
+    # print(f"{len(brands)=} {len(brand_models)=} {len(model_variants)=}")
