@@ -284,4 +284,10 @@ fabric.properties
 # https://plugins.jetbrains.com/plugin/8053-azure-toolkit-for-intellij
 .idea/**/azureSettings.xml
 
+
+### Redis ###
+# Ignore redis binary dump (dump.rdb) files
+
+*.rdb
+
 # End of https://www.toptal.com/developers/gitignore/api/django,pycharm
