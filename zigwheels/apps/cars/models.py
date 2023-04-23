@@ -53,6 +53,9 @@ class CarFeature(BaseModel):
         help_text=_("Type/Category of car feature"),
     )
 
+    class Meta:
+        unique_together = ["name", "value", "unit"]
+
     def __str__(self):
         return f"{self.name} - {self.value} {self.unit}"
 
@@ -65,19 +68,16 @@ class CarVariant(BaseModel):
         blank=True,
     )
     slug = models.SlugField(max_length=50)
-    # TODO: change to choice field
     vehicle_type = models.CharField(
         _("Car vehicle type"),
         max_length=50,
         blank=True,
     )
-    # TODO: change to choice field
     fuel_type = models.CharField(
         _("Car fuel type"),
         max_length=50,
         blank=True,
     )
-    # TODO: change to choice field
     body_type = models.CharField(
         _("Car body type"),
         max_length=50,

@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 from celery import group
+from django.db.utils import IntegrityError
 from djmoney.money import Money
 
 from config.celery import app
@@ -67,6 +68,7 @@ def download_car_brands(self):
 
 @app.task(bind=True)
 def download_car_models(self):
+    # TODO: use group tasks
     api_client = ZigWheelsAPI()
     for brand in Brand.objects.all():
         logger.debug(f"Processing brand {brand.name}")
@@ -109,20 +111,16 @@ def download_car_variants_batch(self, model_id):
         )
         features = []
         for feature in result["keyFeatures"]:
-            # TODO: fix duplicates when multithreading
-            car_feature = CarFeature.objects.filter(
-                name=feature["name"],
-                value=feature["value"],
-                unit=feature["unit"],
-                type=feature["groupName"],
-            ).first()
-            if car_feature is None:
-                car_feature = CarFeature.objects.create(
-                    name=feature["name"],
-                    value=feature["value"],
-                    unit=feature["unit"],
-                    type=feature["groupName"],
-                )
+            car_kwargs = {
+                "name": feature["name"],
+                "value": feature["value"],
+                "unit": feature["unit"],
+                "type": feature["groupName"],
+            }
+            try:
+                car_feature = CarFeature.objects.create(**car_kwargs)
+            except IntegrityError:
+                car_feature = CarFeature.objects.get(**car_kwargs)
             features.append(car_feature)
 
         variant, _created = CarVariant.objects.update_or_create(
